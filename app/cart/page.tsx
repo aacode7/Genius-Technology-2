@@ -13,7 +13,7 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { useCart } from "@/contexts/cart-context"
 import type { Product } from "@/types"
-import { Footer } from "@/components/layout/footer"
+// import { Footer } from "@/components/layout/footer"
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice, appliedCoupon, applyCoupon, removeCoupon } = useCart()
@@ -189,7 +189,6 @@ export default function CartPage() {
             </Link>
           </div>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -450,7 +449,7 @@ export default function CartPage() {
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

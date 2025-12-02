@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -53,7 +53,7 @@ const slides = [
   },
 ]
 
-export function HeroSection() {
+function HeroSectionComponent() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
@@ -65,9 +65,17 @@ export function HeroSection() {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
   }, [])
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     setCurrentSlide(index)
-  }
+  }, [])
+
+  const handleMouseEnter = useCallback(() => {
+    setIsAutoPlaying(false)
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setIsAutoPlaying(true)
+  }, [])
 
   useEffect(() => {
     if (!isAutoPlaying) return
@@ -80,8 +88,8 @@ export function HeroSection() {
   return (
     <section
       className="relative h-[685px] overflow-hidden mt-[50px]"
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Slides */}
       <div className="relative h-full">
@@ -117,14 +125,13 @@ export function HeroSection() {
                     }`}
                 >
                   <h1 className="text-5xl md:text-[96px] font-bold text-white mb-6 animate-fade-in">{slide.title}</h1>
-                  <p className="text-xl text-white/90 mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+                  <p className="text-xl text-white/90 mb-8 animate-fade-in [animation-delay:0.2s]">
                     {slide.subtitle}
                   </p>
                   <Link href={slide.link} tabIndex={index === currentSlide ? 0 : -1}>
                     <Button
                       size="lg"
-                      className="bg-[#FFCC01] text-white px-8 py-4 text-lg font-semibold rounded-[30px] transform hover:scale-105 transition-all duration-300 animate-fade-in"
-                      style={{ animationDelay: "0.4s" }}
+                      className="bg-[#FFCC01] text-white px-8 py-4 text-lg font-semibold rounded-[30px] transform hover:scale-105 transition-all duration-300 animate-fade-in [animation-delay:0.4s]"
                     >
                       {slide.cta}
                     </Button>
@@ -151,3 +158,6 @@ export function HeroSection() {
     </section>
   )
 }
+
+// Memoize the entire component since it only needs to re-render when its internal state changes
+export const HeroSection = React.memo(HeroSectionComponent)

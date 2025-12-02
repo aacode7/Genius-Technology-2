@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import { QueryProvider } from "@/contexts/query-provider"
 import { AuthProvider } from "@/contexts/auth-context"
 import { CartProvider } from "@/contexts/cart-context"
 import { WishlistProvider } from "@/contexts/wishlist-context"
@@ -40,22 +41,24 @@ export function LayoutClient({ children }: LayoutClientProps) {
       <PerformanceMonitor />
       <MobilePerformanceOptimizer />
       <BackgroundPatterns variant={isMobile ? "mobile" : "default"} />
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <ComparisonProvider>
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">
-                  {children}
-                </main>
-                <Footer />
-              </div>
-              <Toaster />
-            </ComparisonProvider>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <ComparisonProvider>
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-grow">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+                <Toaster />
+              </ComparisonProvider>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
+      </QueryProvider>
     </>
   )
 }

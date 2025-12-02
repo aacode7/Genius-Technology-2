@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import ProductsClientPage from "./ProductsClientPage"
+import ProductsClientPageOptimized from "./ProductsClientPageOptimized"
 
 export const metadata: Metadata = {
   title: "All Products",
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 }
 
 export default function ProductsPage() {
-  return <ProductsClientPage />
+  return <ProductsClientPageOptimized />
 }

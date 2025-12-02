@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production', // Auto-remove console.logs in production
+  },
   eslint: {
     ignoreDuringBuilds: false, // Enforce ESLint checks during builds
   },
@@ -46,7 +50,7 @@ const nextConfig = {
   webpack: (config, { dev, isServer }) => {
     // Reduce bundle size by replacing moment.js with dayjs if used
     config.resolve.alias.moment = 'dayjs'
-    
+
     // Only include necessary locales for dayjs if used
     if (!isServer) {
       config.resolve.fallback = {
@@ -54,12 +58,12 @@ const nextConfig = {
         fs: false,
       }
     }
-    
-    // Optimize for faster builds
+
+    // Optimize for production builds
     if (!dev) {
       // Show more detailed build information
       config.stats = 'normal';
-      
+
       // Optimize build performance
       config.optimization = {
         ...config.optimization,
@@ -68,12 +72,26 @@ const nextConfig = {
         mergeDuplicateChunks: true,
         flagIncludedChunks: true,
         sideEffects: true,
-        // Enable more aggressive optimizations
         usedExports: true,
         concatenateModules: true,
       };
+
+      // Remove console.logs in production
+      if (config.optimization.minimizer) {
+        config.optimization.minimizer.forEach((plugin) => {
+          if (plugin.constructor.name === 'TerserPlugin') {
+            plugin.options.terserOptions = {
+              ...plugin.options.terserOptions,
+              compress: {
+                ...plugin.options.terserOptions?.compress,
+                drop_console: true,
+              },
+            }
+          }
+        })
+      }
     }
-    
+
     return config
   },
   // Enable faster page builds

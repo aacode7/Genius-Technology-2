@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import React, { useMemo, useCallback } from "react"
 import Link from "next/link"
 import type { Product } from "@/types"
 import { useCart } from "@/contexts/cart-context"
@@ -9,7 +9,7 @@ import { useComparison } from "@/contexts/comparison-context"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, Heart, ShoppingCart, Eye, GitCompare } from "lucide-react"
+import { Heart, ShoppingCart, Eye, GitCompare } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { OptimizedImage } from "@/components/shared/optimized-image"
 
@@ -18,50 +18,76 @@ interface ProductCardProps {
   viewMode?: "grid" | "list"
 }
 
-export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
+function ProductCardComponent({ product, viewMode = "grid" }: ProductCardProps) {
   const { addItem } = useCart()
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlist()
   const { addToComparison, isInComparison } = useComparison()
   const { toast } = useToast()
 
-  const handleAddToCart = () => {
+  // Memoize product data extraction
+  const productData = useMemo(() => ({
+    name: product?.name || 'Unnamed Product',
+    description: product?.description || 'No description available',
+    price: Number(product?.price || 0),
+    originalPrice: Number(product?.originalPrice || 0),
+    rating: Number(product?.rating || 4.0),
+    url: `/mobile/${encodeURIComponent(product.id)}`,
+    image: (() => {
+      if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
+        const validImage = product.images.find(img =>
+          img && typeof img === 'string' && img.trim().length > 0 && img.startsWith('https://')
+        )
+        if (validImage) return validImage
+      }
+      return "/placeholder.svg?height=250&width=250&query=product"
+    })(),
+  }), [product.id, product?.name, product?.description, product?.price, product?.originalPrice, product?.rating, product?.images])
+
+  // Memoize discount calculation
+  const discount = useMemo(() => {
+    return productData.originalPrice && productData.originalPrice > productData.price
+      ? Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100)
+      : 0
+  }, [productData.originalPrice, productData.price])
+
+  const handleAddToCart = useCallback(() => {
     addItem({
       id: product.id,
       productId: product.id,
-      name: productName,
-      price: productPrice,
-      image: productImage,
-      maxQuantity: product.stock || 10,
+      name: productData.name,
+      price: productData.price,
+      image: productData.image,
+      maxQuantity: product.inStock || 10,
     })
     toast({
       title: "Added to cart",
-      description: `${productName} has been added to your cart.`,
+      description: `${productData.name} has been added to your cart.`,
     })
-  }
+  }, [product.id, product.inStock, productData.name, productData.price, productData.image, addItem, toast])
 
-  const handleToggleWishlist = () => {
+  const handleToggleWishlist = useCallback(() => {
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id)
       toast({
         title: "Removed from wishlist",
-        description: `${productName} has been removed from your wishlist.`,
+        description: `${productData.name} has been removed from your wishlist.`,
       })
     } else {
       addToWishlist({
         id: product.id,
         productId: product.id,
-        name: productName,
-        price: productPrice,
-        image: productImage,
+        name: productData.name,
+        price: productData.price,
+        image: productData.image,
       })
       toast({
         title: "Added to wishlist",
-        description: `${productName} has been added to your wishlist.`,
+        description: `${productData.name} has been added to your wishlist.`,
       })
     }
-  }
+  }, [product.id, productData.name, productData.price, productData.image, isInWishlist, removeFromWishlist, addToWishlist, toast])
 
-  const handleAddToCompare = () => {
+  const handleAddToCompare = useCallback(() => {
     if (!isInComparison(product.id)) {
       addToComparison(product)
       toast({
@@ -69,39 +95,10 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
         description: `${product.name} has been added to the comparison list.`,
       })
     }
-  }
+  }, [product, isInComparison, addToComparison, toast])
 
-  // Generate properly encoded URL for the product
-  const productUrl = `/mobile/${encodeURIComponent(product.id)}`
-  
-  const discount = product.originalPrice && product.originalPrice > product.price
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0
-
-  // ✅ Safe fallback for images - filter out invalid/gs:// URLs
-  const productImage = (() => {
-    if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
-      // Find first valid https:// image URL
-      const validImage = product.images.find(img => 
-        img && 
-        typeof img === 'string' && 
-        img.trim().length > 0 && 
-        img.startsWith('https://')
-      )
-      if (validImage) {
-        return validImage
-      }
-    }
-    return "/placeholder.svg?height=250&width=250&query=product"
-  })()
-
-  // ✅ Safe fallbacks for product data - use transformed fields
-  const productName = product?.name || 'Unnamed Product'
-  const productDescription = product?.description || 'No description available'
-  const productPrice = Number(product?.price || 0)
-  const productOriginalPrice = Number(product?.originalPrice || 0)
-  const productRating = Number(product?.rating || 4.0)
-  const productReviewCount = Number(product?.reviewCount || 0)
+  // Destructure for easier access
+  const { name: productName, description: productDescription, price: productPrice, originalPrice: productOriginalPrice, image: productImage, url: productUrl } = productData
 
   if (viewMode === "list") {
     return (
@@ -298,3 +295,10 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     </Card>
   )
 }
+
+// Wrap with React.memo to prevent unnecessary re-renders
+export const ProductCard = React.memo(ProductCardComponent, (prevProps, nextProps) => {
+  // Only re-render if product id or viewMode changes
+  return prevProps.product.id === nextProps.product.id &&
+         prevProps.viewMode === nextProps.viewMode
+})

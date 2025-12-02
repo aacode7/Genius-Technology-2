@@ -2,7 +2,7 @@
 
 import { useState, memo } from "react"
 import Image from "next/image"
-import { Star, Play, Heart, MessageCircle, ExternalLink } from "lucide-react"
+import { Star, Play } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
 interface Testimonial {
@@ -28,7 +28,7 @@ export function CustomerTestimonials() {
       id: "1",
       type: "text",
       customerName: "Rajesh Kumar",
-      customerPhoto: "/placeholder.svg?height=60&width=60&text=RK",
+      customerPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop",
       rating: 5,
       content:
         "Amazing quality headphones! The sound is crystal clear and the battery life is incredible. I use them daily for work calls and music. Highly recommend Genius Technology for their excellent products and fast delivery.",
@@ -40,21 +40,21 @@ export function CustomerTestimonials() {
       id: "2",
       type: "video",
       customerName: "Priya Sharma",
-      customerPhoto: "/placeholder.svg?height=60&width=60&text=PS",
+      customerPhoto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop",
       rating: 5,
       content:
         "Watch my detailed review of this amazing power bank! It charges my phone 4 times and the fast charging is incredible.",
       productPurchased: "Fast Charging Power Bank 20000mAh",
       date: "2024-01-12",
       isVerified: true,
-      videoThumbnail: "/placeholder.svg?height=300&width=400&text=Video+Review",
+      videoThumbnail: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&h=300&fit=crop",
       videoDuration: "2:34",
     },
     {
       id: "3",
       type: "instagram",
       customerName: "techreview_india",
-      customerPhoto: "/placeholder.svg?height=60&width=60&text=TR",
+      customerPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop",
       rating: 5,
       content:
         "Just got this wireless charger from @geniustechnology and it's a game changer! Fast charging and sleek design. Perfect for my desk setup. #TechReview #WirelessCharging #GeniusTech",
@@ -78,7 +78,8 @@ export function CustomerTestimonials() {
           </div>
 
           {/* Button */}
-          <button className="hiddle lg:block bg-[#FFCC01] text-white px-6 py-3 rounded-full shadow-lg w-[150px] ">view all</button>        </div>
+          <button className="hidden lg:block bg-[#FFCC01] text-[#004AAD] font-semibold px-6 py-3 rounded-full shadow-lg w-[150px] hover:bg-[#FFD633] transition-colors">view all</button>
+        </div>
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
@@ -142,9 +143,9 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }: { testimo
 
   if (testimonial.type === "video") {
     return (
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col min-h-[400px] max-w-[400px] mx-auto">
         {/* Video Thumbnail */}
-        <div className="relative h-48 bg-gray-900">
+        <div className="relative h-48 bg-gray-900 flex-shrink-0">
           <Image
             src={testimonial.videoThumbnail! || "/placeholder.svg"}
             alt="Video review thumbnail"
@@ -206,7 +207,7 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }: { testimo
 
   if (testimonial.type === "instagram") {
     return (
-      <div className="relative bg-white rounded-3xl shadow-lg p-6 max-w-[410px] mx-auto border-4 border-[#2563eb]" style={{ boxShadow: '0 0 0 4px #e0e7ff, 0 4px 24px 0 rgba(0,0,0,0.10)' }}>
+      <div className="relative bg-white rounded-3xl shadow-lg p-6 max-w-[400px] mx-auto border-4 border-[#2563eb] flex flex-col min-h-[400px]" style={{ boxShadow: '0 0 0 4px #e0e7ff, 0 4px 24px 0 rgba(0,0,0,0.10)' }}>
         {/* Quote Icon */}
         <svg
           className="absolute top-6 right-6 w-8 h-8 text-black/70"
@@ -231,7 +232,7 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }: { testimo
         {/* Main Image */}
         <div className="w-full rounded-xl overflow-hidden mb-4 relative h-[180px]">
           <Image
-            src={testimonial.videoThumbnail || "/placeholder.svg"}
+            src={testimonial.videoThumbnail || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&h=180&fit=crop"}
             alt="Instagram testimonial visual"
             fill
             sizes="(max-width: 768px) 100vw, 33vw"

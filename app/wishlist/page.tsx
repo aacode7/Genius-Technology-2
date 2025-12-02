@@ -46,9 +46,7 @@ export default function WishlistPage() {
               </Button>
             </CardContent>
           </Card>
-      </div>
-      <Footer/>
-      </>
+      </div>      </>
     )
   }
 

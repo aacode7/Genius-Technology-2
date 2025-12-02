@@ -16,7 +16,8 @@ import BrandPage from "../brand/[slug]/page"
 
 import { BackgroundPatterns } from "@/components/shared/background-patterns"
 import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+// Footer is coming from layout, so we don't use it here
+// import { Footer } from "@/components/layout/footer"
 
 export default function JoinPage() {
   // Join us submission hook
@@ -51,7 +52,7 @@ export default function JoinPage() {
     e.preventDefault()
 
     try {
-      console.log('Join Us Form - Submitting request:', formData)
+      console.log("Join Us Form - Submitting request:", formData)
 
       // Reset any previous state
       resetState()
@@ -63,32 +64,36 @@ export default function JoinPage() {
         message: formData.message.trim() || undefined,
       })
 
-      console.log('Join Us Form - Request submitted successfully:', result)
+      console.log("Join Us Form - Request submitted successfully:", result)
 
       // Show success toast
       toast({
         title: "Application Submitted Successfully!",
-        description: "Thank you for your interest in joining us. We'll review your application and get back to you soon.",
-        variant: "default"
+        description:
+          "Thank you for your interest in joining us. We'll review your application and get back to you soon.",
+        variant: "default",
       })
 
       // Reset form
       setFormData({ name: "", email: "", message: "" })
-
     } catch (error) {
-      console.error('Join Us Form - Error submitting request:', error)
+      console.error("Join Us Form - Error submitting request:", error)
 
       // Show error toast
       toast({
         title: "Submission Failed",
-        description: error instanceof Error ? error.message : "Failed to submit your application. Please try again.",
-        variant: "destructive"
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to submit your application. Please try again.",
+        variant: "destructive",
       })
     }
   }
 
   return (
-    <div className="max-h-screen overflow-y-auto">
+    // 🔑 MAIN WRAPPER UPDATED: no max-h-screen/overflow, added bottom padding
+    <div className="relative min-h-screen pb-40">
       <BackgroundPatterns variant="minimal" />
       <div className="relative z-10">
         <Header />
@@ -97,16 +102,25 @@ export default function JoinPage() {
         {/* Hero banner with image and overlay text */}
         <section className="container mx-auto px-4 mt-6">
           <div className="relative h-[280px] md:h-[360px] mt-[150px] w-full overflow-hidden rounded-lg">
-            <img src="/Hero.png" alt="Join Us Banner" className="absolute inset-0 h-full w-full object-cover" />
+            <img
+              src="/Hero.png"
+              alt="Join Us Banner"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/40" />
             <div className="relative h-full w-full flex items-center">
               <div className="px-6 md:px-10 text-white max-w-xl">
-                <h1 className="text-2xl md:text-3xl font-bold mb-3">Build the Future With Us</h1>
+                <h1 className="text-2xl md:text-3xl font-bold mb-3">
+                  Build the Future With Us
+                </h1>
                 <p className="text-sm md:text-base leading-relaxed opacity-90 mb-5">
                   Enjoy unbeatable discounts on premium mobile accessories and electronics.
                   Shop now and save big on top-rated tech—only while stocks last!
                 </p>
-                <Button variant="secondary" className="bg-white text-gray-900 hover:bg-white/90">
+                <Button
+                  variant="secondary"
+                  className="bg-white text-gray-900 hover:bg-white/90"
+                >
                   Explore Opportunities
                 </Button>
               </div>
@@ -117,9 +131,10 @@ export default function JoinPage() {
         {/* Intro paragraph */}
         <section className="container mx-auto px-4">
           <p className="text-sm md:text-base text-muted-foreground mt-6 max-w-5xl">
-            At Genius Technology, we’re more than a tech company—we’re a community of innovators, creators,
-            and problem-solvers. Whether you’re looking to grow your career or collaborate as a partner, we offer
-            a space where ideas thrive and impact is real. Join us in shaping smarter, more connected lives across India.
+            At Genius Technology, we’re more than a tech company—we’re a community of
+            innovators, creators, and problem-solvers. Whether you’re looking to grow your
+            career or collaborate as a partner, we offer a space where ideas thrive and
+            impact is real. Join us in shaping smarter, more connected lives across India.
           </p>
         </section>
 
@@ -175,7 +190,8 @@ export default function JoinPage() {
             {success && (
               <Alert className="border-green-200 bg-green-50">
                 <AlertDescription className="text-green-700">
-                  <strong>Success:</strong> Your application has been submitted successfully! We'll get back to you soon.
+                  <strong>Success:</strong> Your application has been submitted successfully!
+                  We'll get back to you soon.
                 </AlertDescription>
               </Alert>
             )}
@@ -192,7 +208,8 @@ export default function JoinPage() {
           </form>
         </section>
 
-        <Footer />
+        {/* Footer is global from layout; keep it out here */}
+        {/* <Footer /> */}
       </div>
     </div>
   )

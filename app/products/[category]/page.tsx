@@ -2,25 +2,12 @@ import { Suspense } from "react"
 import type { Metadata } from "next"
 import CategoryClientPage from "./CategoryClientPage"
 import { ProductDetailsSkeleton } from "@/components/ui/enhanced-skeleton"
-import { cache } from "react"
 
 interface CategoryPageProps {
   params: Promise<{
     category: string
   }>
 }
-
-// Cache category data fetching
-const getCachedCategoryProducts = cache(async (category: string) => {
-  try {
-    // Import Firebase functions dynamically
-    const { getMobileCollectionByCategory } = await import('@/lib/firebase-collections')
-    return await getMobileCollectionByCategory(category)
-  } catch (error) {
-    console.error('Failed to fetch category products:', error)
-    return []
-  }
-})
 
 // Dynamic metadata generation for mobile category pages
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
@@ -48,16 +35,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const resolvedParams = await params
-  
-  // Pre-fetch category products on server for instant loading
-  const categoryForQuery = resolvedParams.category.charAt(0).toUpperCase() + resolvedParams.category.slice(1)
-  const initialProducts = await getCachedCategoryProducts(categoryForQuery)
-  
+
   return (
     <Suspense fallback={<ProductDetailsSkeleton />}>
-      <CategoryClientPage 
-        params={resolvedParams} 
-        initialData={initialProducts}
+      <CategoryClientPage
+        params={resolvedParams}
       />
     </Suspense>
   )
