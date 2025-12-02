@@ -98,12 +98,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      <Card className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
-        <CardHeader className="text-center">
+    <div className="h-screen overflow-hidden flex">
+      <Card className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-white overflow-y-auto">
+        <CardHeader className="text-center pt-8">
           <CardTitle className="text-[36px] text-[#004AAD] font-bold">Create Account</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-8">
           {/* Form starts here */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">

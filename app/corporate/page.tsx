@@ -139,7 +139,7 @@ export default function CorporatePage() {
             <section className="container mx-auto px-4 sm:px-6 lg:px-[50px] mt-[100px] sm:mt-[120px] lg:mt-[150px]">
               <div className="mt-4 lg:mt-[16px] w-full rounded-lg overflow-hidden">
                 <img
-                  src="Corporate.png"
+                  src="/Corporate.png"
                   alt="Corporate Banner"
                   className="w-full h-[180px] sm:h-[220px] lg:h-[250px] object-cover"
                   loading="eager"
@@ -173,7 +173,7 @@ export default function CorporatePage() {
             <section className="px-4 sm:px-6 lg:px-[50px] container mx-auto mt-8 sm:mt-10 lg:mt-12">
               <div className="w-full rounded-[8px] sm:rounded-[12px] overflow-hidden relative h-[200px] sm:h-[250px] lg:h-[300px] mb-2">
                 <img
-                  src="Corporate.png"
+                  src="/Corporate.png"
                   alt="Exclusive Deals"
                   className="w-full h-full object-cover"
                   loading="eager"
